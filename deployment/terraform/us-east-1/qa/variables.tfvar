@@ -1,0 +1,13 @@
+organization=""
+application="users-api"
+internal_alb=false
+azs=["a","b"]
+domain_external="PLEASE_ADD_ROUTE53_PUBLIC_DNS(e.g. example.org)"
+domain_internal="PLEASE_ADD_ROUTE53_PUBLIC_DNS(e.g. example.org)"
+cidr=["10.11.0.0/16"]
+vpc_prefix="apps"
+subnet_prefix="apps"
+friendly_dns_name=""
+environment="qa"
+image="232196027141.dkr.ecr.us-east-1.amazonaws.com/users-api" 
+owner="D3b"

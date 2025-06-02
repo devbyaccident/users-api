@@ -1,5 +1,5 @@
 # First image to compile typescript to javascript
-FROM node:20-alpine3.18 AS build-image
+FROM --platform=linux/amd64 node:20-alpine3.18 AS build-image
 WORKDIR /app
 COPY . .
 RUN npm ci && npm run build && npm run test

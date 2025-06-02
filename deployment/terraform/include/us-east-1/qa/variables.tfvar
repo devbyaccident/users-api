@@ -1,0 +1,17 @@
+organization="include"
+application="users-api"
+internal_alb=false
+azs=["a","b"]
+domain_external="373997854230.d3b.io"
+domain_internal="373997854230.d3b.io"
+cidr=["10.11.0.0/16"]
+vpc_prefix="apps"
+subnet_prefix="apps"
+friendly_dns_name=""
+environment="qa"
+image_name="373997854230.dkr.ecr.us-east-1.amazonaws.com/users-api" 
+owner="include"
+add_cloudfront="1"
+cache_policy="CachingDisabled"
+entrypoint_command="npm run start:prd"
+health_check_path="/status"
