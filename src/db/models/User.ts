@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 
 import { LINKEDIN_REGEX, MAX_LENGTH_PER_ROLE, NAME_REGEX, UUID_VERSION } from '../../utils/constants';
+import { SubscriptionStatus } from '../../utils/newsletter';
 import sequelizeConnection from '../config';
 
 interface IUserAttributes {
@@ -9,7 +10,6 @@ interface IUserAttributes {
     first_name?: string;
     last_name?: string;
     era_commons_id?: string;
-    nih_ned_id?: string;
     email?: string;
     linkedin?: string;
     public_email?: string;
@@ -30,25 +30,59 @@ interface IUserAttributes {
     completed_registration: boolean;
     deleted: boolean;
     config?: any;
+    locale?: string;
+    newsletter_email?: string;
+    newsletter_subscription_status?: SubscriptionStatus;
+    newsletter_dataset_subscription_status?: SubscriptionStatus;
+    location_country?: string;
+    location_state?: string;
+    website?: string;
+    areas_of_interest?: string[];
+    is_public?: boolean;
+    title?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IUserInput extends IUserAttributes {}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IUserOuput extends IUserAttributes {}
+export interface IUserOutput extends IUserAttributes {}
 
 class UserModel extends Model<IUserAttributes, IUserInput> implements IUserAttributes {
     public id: number;
     public keycloak_id: string;
+    public first_name?: string;
+    public last_name?: string;
+    public era_commons_id?: string;
+    public email?: string;
+    public external_individual_fullname?: string;
+    public profile_image_key?: string;
+    public affiliation?: string;
+    public research_domains?: string[];
+    public research_area_description?: string;
+    public locale?: string;
+    public newsletter_email?: string;
+    public newsletter_subscription_status?: SubscriptionStatus;
+    public newsletter_dataset_subscription_status?: SubscriptionStatus;
     public commercial_use_reason: string;
     public accepted_terms: boolean;
     public understand_disclaimer: boolean;
     public completed_registration: boolean;
     public creation_date: Date;
     public updated_date: Date;
+    public consent_date?: Date;
     public deleted: boolean;
     public roles: string[];
     public portal_usages: string[];
+    public public_email?: string;
+    public external_individual_email?: string;
+    public linkedin?: string;
+    public location_country?: string;
+    public location_state?: string;
+    public website?: string;
+    public areas_of_interest?: string[];
+    public is_public?: boolean;
+    public title?: string;
 }
 
 UserModel.init(
@@ -80,33 +114,25 @@ UserModel.init(
         first_name: {
             type: DataTypes.CITEXT,
             validate: {
-                len: [1, 35],
+                len: [1, 70],
                 is: NAME_REGEX,
             },
         },
         last_name: {
             type: DataTypes.CITEXT,
             validate: {
-                len: [1, 35],
+                len: [1, 70],
                 is: NAME_REGEX,
             },
         },
         era_commons_id: {
             type: DataTypes.STRING,
-            validate: {
-                isAlpha: true,
-            },
-        },
-        nih_ned_id: {
-            type: DataTypes.STRING,
-            validate: {
-                isAlpha: true,
-            },
         },
         commercial_use_reason: {
             type: DataTypes.STRING,
+            allowNull: true,
             validate: {
-                is: NAME_REGEX,
+                validate: (value: string) => value === '' || NAME_REGEX.test(value),
             },
         },
         email: {
@@ -118,14 +144,13 @@ UserModel.init(
         external_individual_fullname: {
             type: DataTypes.TEXT,
             validate: {
-                isAlpha: true,
+                is: NAME_REGEX,
             },
         },
         external_individual_email: {
             type: DataTypes.TEXT,
-            validate: {
-                isEmail: true,
-            },
+            allowNull: true,
+            validate: { isEmail: true },
         },
         roles: {
             type: DataTypes.ARRAY(DataTypes.CITEXT),
@@ -142,15 +167,15 @@ UserModel.init(
         },
         affiliation: {
             type: DataTypes.CITEXT,
+            allowNull: true,
             validate: {
-                is: NAME_REGEX,
+                validate: (value: string) => value === '' || NAME_REGEX.test(value),
             },
         },
         public_email: {
             type: DataTypes.TEXT,
-            validate: {
-                isEmail: true,
-            },
+            allowNull: true,
+            validate: { isEmail: true },
         },
         linkedin: {
             type: DataTypes.TEXT,
@@ -207,8 +232,87 @@ UserModel.init(
             allowNull: false,
             defaultValue: {},
         },
+        locale: {
+            type: DataTypes.ENUM('en', 'fr'),
+            validate: {
+                isAlpha: true,
+            },
+        },
+        newsletter_email: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: { isEmail: true },
+        },
+        newsletter_subscription_status: {
+            type: DataTypes.ENUM(
+                SubscriptionStatus.SUBSCRIBED,
+                SubscriptionStatus.UNSUBSCRIBED,
+                SubscriptionStatus.FAILED,
+            ),
+            allowNull: true,
+            validate: {
+                isAlpha: true,
+            },
+        },
+        newsletter_dataset_subscription_status: {
+            type: DataTypes.ENUM(
+                SubscriptionStatus.SUBSCRIBED,
+                SubscriptionStatus.UNSUBSCRIBED,
+                SubscriptionStatus.FAILED,
+            ),
+            allowNull: true,
+            validate: {
+                isAlpha: true,
+            },
+        },
+        location_country: {
+            type: DataTypes.CITEXT,
+            allowNull: true,
+            validate: {
+                validate: (value: string) => value === '' || NAME_REGEX.test(value),
+            },
+        },
+        location_state: {
+            type: DataTypes.CITEXT,
+            allowNull: true,
+            validate: {
+                validate: (value: string) => value === '' || NAME_REGEX.test(value),
+            },
+        },
+        website: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: { isUrl: true },
+        },
+        areas_of_interest: DataTypes.ARRAY(DataTypes.CITEXT),
+        is_public: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            validate: {
+                isBoolean: true,
+            },
+        },
+        title: {
+            type: DataTypes.CITEXT,
+            allowNull: true,
+            validate: {
+                validate: (value: string) => value === '' || NAME_REGEX.test(value),
+            },
+        },
     },
-    { sequelize: sequelizeConnection, modelName: 'users', timestamps: false },
+    {
+        sequelize: sequelizeConnection,
+        modelName: 'users',
+        timestamps: false,
+        hooks: {
+            beforeValidate: (instance) => {
+                instance.public_email = instance.public_email || null;
+                instance.external_individual_email = instance.external_individual_email || null;
+                instance.linkedin = instance.linkedin || null;
+                instance.website = instance.website || null;
+            },
+        },
+    },
 );
 
 export default UserModel;

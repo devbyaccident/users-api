@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 
-import { NAME_REGEX, UUID_VERSION } from '../../utils/constants';
+import { SET_FILTER_NAME_REGEX, UUID_VERSION } from '../../utils/constants';
 import sequelizeConnection from '../config';
 
 interface IUserSetAttributes {
@@ -8,9 +8,10 @@ interface IUserSetAttributes {
     keycloak_id: string;
     content: any;
     alias: string;
-    sharedpublicly: boolean;
+    is_phantom_manifest: boolean;
     creation_date: Date;
     updated_date: Date;
+    is_invisible: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -23,9 +24,10 @@ class UserSetModel extends Model<IUserSetAttributes, IUserSetsInput> implements 
     public keycloak_id: string;
     public content: any;
     public alias: string;
-    public sharedpublicly: boolean;
+    public is_phantom_manifest: boolean;
     public creation_date: Date;
     public updated_date: Date;
+    public is_invisible: boolean;
 }
 
 UserSetModel.init(
@@ -50,10 +52,10 @@ UserSetModel.init(
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                is: NAME_REGEX,
+                is: SET_FILTER_NAME_REGEX,
             },
         },
-        sharedpublicly: {
+        is_phantom_manifest: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
@@ -78,6 +80,14 @@ UserSetModel.init(
             defaultValue: new Date(),
             validate: {
                 isDate: true,
+            },
+        },
+        is_invisible: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+            validate: {
+                isBoolean: true,
             },
         },
     },

@@ -10,15 +10,34 @@ const sanitizeInputPayload = (payload: IUserSetsInput) => {
     return rest;
 };
 
-export const getById = async (keycloak_id: string, id: string): Promise<IUserSetsOutput> => {
+export const getById = async (id: string): Promise<IUserSetsOutput> => {
+    const filter = await UserSetModel.findOne({
+        where: { id },
+    });
+
+    if (!filter) {
+        throw createHttpError(StatusCodes.NOT_FOUND, `User Set #${id} does not exist`);
+    }
+
+    return filter;
+};
+
+export const getByIds = async (ids: string[]): Promise<IUserSetsOutput[]> =>
+    await UserSetModel.findAll({
+        where: {
+            id: { [Op.in]: ids },
+        },
+    });
+
+export const getByIdAndShared = async (id: string): Promise<IUserSetsOutput> => {
     const filter = await UserSetModel.findOne({
         where: {
-            [Op.and]: [{ keycloak_id }, { id }],
+            [Op.and]: [{ id }],
         },
     });
 
     if (!filter) {
-        throw createHttpError(StatusCodes.NOT_FOUND, `Saved filter #${id} does not exist.`);
+        throw createHttpError(StatusCodes.NOT_FOUND, `User Set #${id} does not exist.`);
     }
 
     return filter;
@@ -59,4 +78,23 @@ export const destroy = async (keycloak_id: string, id: string): Promise<boolean>
         where: { [Op.and]: [{ keycloak_id }, { id }] },
     });
     return !!deletedCount;
+};
+
+/*@deprecate*/
+export const share = async (id: string, keycloak_id: string): Promise<boolean> => {
+    // Make that function an identity so that it does not break the portals.
+    // Once the portals are updated, this feature will be removed.
+    /*  const updatedCount = await UserSetModel.update(
+        {
+            sharedpublicly: true,
+        },
+        {
+            where: {
+                [Op.and]: [{ keycloak_id }, { id }],
+            },
+        },
+    );
+
+    return !!updatedCount?.[0];*/
+    return true;
 };

@@ -18,6 +18,9 @@ const cleanedUserAttributes = [
     'profile_image_key',
     'research_domains',
     'research_area_description',
+    'locale',
+    'newsletter_email',
+    'newsletter_subscription_status',
 ];
 
 const roleOptions = [

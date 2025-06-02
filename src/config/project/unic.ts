@@ -7,6 +7,7 @@ const cleanedUserAttributes = [
     'keycloak_id',
     'first_name',
     'last_name',
+    'title',
     'roles',
     'portal_usages',
     'creation_date',
@@ -23,7 +24,11 @@ const cleanedUserAttributes = [
 export const roleOptions = [
     {
         value: 'bioinformatician_software_developer',
-        label: 'Bioinformatician, software developer',
+        label: 'Bioinformatician, data analyst, statistician',
+    },
+    {
+        value: 'researcher_in_academic_or_non_profit_institution',
+        label: 'Researcher in an academic or non-profit institution',
     },
     {
         value: 'clinician',
@@ -34,55 +39,51 @@ export const roleOptions = [
         label: 'Employee in a governmental agency',
     },
     {
-        value: 'researcher_in_academic_or_non_profit_institution',
-        label: 'Researcher in an academic or non-profit institution',
-    },
-    {
         value: 'representative_of_commercial_or_for_profit_company',
         label: 'Representative of a commercial or for-profit company',
     },
     {
-        value: 'other',
-        label: 'Other',
+        value: 'manager',
+        label: 'Manager',
+    },
+    {
+        value: 'student',
+        label: 'Student',
     },
 ];
 
 export const researchDomainOptions = [
     {
-        value: 'aging',
-        label: 'Aging',
-    },
-    {
         value: 'bioinformatics',
         label: 'Bioinformatics',
-    },
-    {
-        value: 'birth_defects',
-        label: 'Birth Defects',
     },
     {
         value: 'cancer',
         label: 'Cancer',
     },
     {
-        value: 'circulatory_respiratory_health',
-        label: 'Circulatory and Respiratory Health',
+        value: 'neurodevelopmental_conditions',
+        label: 'Neurodevelopmental Conditions',
     },
     {
-        value: 'general_health',
-        label: 'General Health',
+        value: 'population_genomics',
+        label: 'Population Genomics',
     },
     {
         value: 'infection_immunity',
         label: 'Infection and Immunity',
     },
     {
-        value: 'musculoskeletal_health_arthritis',
-        label: 'Musculoskeletal Health and Arthritis',
+        value: 'ia',
+        label: 'Artificial intelligence',
     },
     {
-        value: 'neurodevelopmental_conditions',
-        label: 'Neurodevelopmental Conditions',
+        value: 'rare_diseases',
+        label: 'Rare Diseases',
+    },
+    {
+        value: 'birth_defects',
+        label: 'Congenital malformations',
     },
     {
         value: 'neurosciences_mental_health_addiction',
@@ -93,16 +94,20 @@ export const researchDomainOptions = [
         label: 'Nutrition, Metabolism and Diabetes',
     },
     {
-        value: 'population_genomics',
-        label: 'Population Genomics',
+        value: 'circulatory_respiratory_health',
+        label: 'Circulatory and Respiratory Health',
     },
     {
-        value: 'rare_diseases',
-        label: 'Rare Diseases',
+        value: 'general_health',
+        label: 'General Health',
     },
     {
-        label: 'Other',
-        value: 'other',
+        value: 'musculoskeletal_health_arthritis',
+        label: 'Musculoskeletal Health and Arthritis',
+    },
+    {
+        value: 'aging',
+        label: 'Aging',
     },
 ];
 
