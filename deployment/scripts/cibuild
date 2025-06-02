@@ -1,0 +1,54 @@
+#!/bin/bash
+set -e
+config_file=$(find . -name "app_config" | grep scripts)
+echo "Check Docker version"
+docker version
+
+if [ ! -f deploy_config.txt ]; then
+  echo "Please create deploy_config.txt file"
+  exit 1
+fi
+source deploy_config.txt 
+
+if [[ -n "${ETL_DEBUG}" ]]; then
+    set -x
+fi
+
+function usage() {
+    echo -n \
+        "Usage: $(basename "$0")
+Build application for staging or a release.
+"
+}
+
+if [ -z ${REPO_TO_DEPLOY} ]; then
+    echo "Please Set REPO_TO_DEPLOY(e.g. git@github.com:d3b-center/arc.git)" 
+fi
+
+if [[ -z "${PROJECT}" ]]; then
+    echo "Please set project_name variable"
+   exit 1
+fi
+
+rm -rf $PROJECT 
+git clone $REPO_TO_DEPLOY
+
+cd ${PROJECT}
+if [[ -n "${GIT_COMMIT}" ]]; then
+    GIT_COMMIT="${GIT_COMMIT:0:7}"
+    git checkout ${GIT_COMMIT}
+else
+    git checkout "${GIT_COMMIT}"
+fi
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    if [[ "${1:-}" == "--help" ]]; then
+        usage
+    else
+        # Build tagged container images
+        docker build  --platform linux/amd64 -f Dockerfile . --tag ${PROJECT}:${GIT_COMMIT}debug
+    fi
+fi
+cd ..
+
+rm -rf ${PROJECT} 
